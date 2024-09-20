@@ -23,14 +23,14 @@ class Direction(Enum):
 Point = namedtuple('Point', 'x, y')
 
 # rgb colors
-WHITE = (255, 255, 255)
+# WHITE = (255, 255, 255)
 RED = (200,0,0)
-BLUE1 = (0, 0, 255)
-BLUE2 = (0, 100, 255)
+# BLUE1 = (0, 0, 255)
+# BLUE2 = (0, 100, 255)
 BLACK = (0,0,0)
 
 BLOCK_SIZE = 20
-SPEED = 100
+SPEED = 500
 
 class SnakeGameAI:
     
@@ -42,9 +42,6 @@ class SnakeGameAI:
         pygame.display.set_caption('Snake')
         self.clock = pygame.time.Clock()
         self.reset()
-
-        
-        
 
     def reset(self):
         # init game state
@@ -114,15 +111,15 @@ class SnakeGameAI:
         return False
         
     def _update_ui(self):
-        self.display.fill(BLACK)
+        self.display.fill((200, 200, 200)) #cor do fundo
         
         for pt in self.snake:
-            pygame.draw.rect(self.display, BLUE1, pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE))
-            pygame.draw.rect(self.display, BLUE2, pygame.Rect(pt.x+4, pt.y+4, 12, 12))
+            pygame.draw.rect(self.display, (0, 255, 0), pygame.Rect(pt.x, pt.y, BLOCK_SIZE, BLOCK_SIZE)) #cor verde da cobra
+            pygame.draw.rect(self.display, (102, 51, 0), pygame.Rect(pt.x+4, pt.y+4, 12, 12))
             
         pygame.draw.rect(self.display, RED, pygame.Rect(self.food.x, self.food.y, BLOCK_SIZE, BLOCK_SIZE))
         
-        text = font.render("Score: " + str(self.score), True, WHITE)
+        text = font.render("Score: " + str(self.score), True, BLACK)
         self.display.blit(text, [0, 0])
         pygame.display.flip()
         

@@ -14,12 +14,11 @@ class Agent:
 
     def __init__(self):
         self.n_games = 0
-        self.epsilon = 0 # randomness
-        self.gamma = 0.9 # discount rate
+        self.epsilon = 0 # aleatoriedade
+        self.gamma = 0.9 # taxa do desconto
         self.memory = deque(maxlen = MAX_MEMORY) #popleft()
         self.model = Linear_QNet(11, 256, 3)
         self.trainer = QTrainer(self.model, lr = LR, gamma= self.gamma)
-        #to do: model, trainer
 
     def get_state(self, game):
         head = game.snake[0]
@@ -34,45 +33,45 @@ class Agent:
         dir_d = game.direction == Direction.DOWN
 
         state = [
-            # Danger straight
+            # perigo indo reto
             (dir_r and game.is_collision(point_r)) or 
             (dir_l and game.is_collision(point_l)) or 
             (dir_u and game.is_collision(point_u)) or 
             (dir_d and game.is_collision(point_d)),
 
-            # Danger right
+            # perigo a direita
             (dir_u and game.is_collision(point_r)) or 
             (dir_d and game.is_collision(point_l)) or 
             (dir_l and game.is_collision(point_u)) or 
             (dir_r and game.is_collision(point_d)),
 
-            # Danger left
+            # perigo a esquerda
             (dir_d and game.is_collision(point_r)) or 
             (dir_u and game.is_collision(point_l)) or 
             (dir_r and game.is_collision(point_u)) or 
             (dir_l and game.is_collision(point_d)),
             
-            # Move direction
+            # direções do movimento
             dir_l,
             dir_r,
             dir_u,
             dir_d,
             
-            # Food location 
-            game.food.x < game.head.x,  # food left
-            game.food.x > game.head.x,  # food right
-            game.food.y < game.head.y,  # food up
-            game.food.y > game.head.y  # food down
+            # onde está a comida 
+            game.food.x < game.head.x,  # comida a esquerda
+            game.food.x > game.head.x,  # comida a direita
+            game.food.y < game.head.y,  # comida acima
+            game.food.y > game.head.y  # comida abaixo
             ]
 
         return np.array(state, dtype=int)
 
     def remember(self, state, action, reward, next_state, done):
-        self.memory.append((state, action, reward, next_state, done)) #popleft if MAX_MEMORY is reached
+        self.memory.append((state, action, reward, next_state, done)) #popleft se MAX_MEMORY é alcançada
 
     def train_long_memory(self):
         if len(self.memory) > BATCH_SIZE:
-            mini_sample = random.sample(self.memory, BATCH_SIZE) #list of tuples
+            mini_sample = random.sample(self.memory, BATCH_SIZE) #lista de tuplas
         else:
             mini_sample = self.memory     
 
